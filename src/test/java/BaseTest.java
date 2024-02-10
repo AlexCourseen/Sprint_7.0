@@ -1,3 +1,4 @@
+import com.github.javafaker.Faker;
 import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -9,18 +10,26 @@ import static ru.praktikum.scooter.constants.Config.*;
 
 public class BaseTest {
 
+    private Faker faker = new Faker();
+
+    private String firstName = faker.name().firstName();
+    private String login = faker.pokemon().name();
+
+    private String firstNameOrder = faker.name().firstName();
+    private String lastNameOrder = faker.name().lastName();
+
     protected int idOrder;
-    protected String newCourier = "{\"login\": \"29testCourier\", \"password\": \"123456\",\"firstName\":\"kursin_29\"}";
-    protected String courierNoLogin = "{\"login\": \"\", \"password\": \"123456\",\"firstName\":\"kursin_29\"}";
-    protected String courierNoPass = "{\"login\": \"29testCourier\", \"password\": \"\",\"firstName\":\"kursin_29\"}";
-    protected String courierNoName = "{\"login\": \"29testCourier\", \"password\": \"123456\"}";
-    protected String courierWrongLoginToAuth = "{\"login\": \"testCourier\", \"password\": \"123456\"}";
-    protected String courierWrongPassToAuth = "{\"login\": \"29testCourier\", \"password\": \"0000123456\"}";
+    protected String newCourier = "{\"login\": \""+ login + "\", \"password\": \"123456\",\"firstName\":\""+ firstName + "\"}";
+    protected String courierNoLogin = "{\"login\": \"\", \"password\": \"123456\",\"firstName\":\""+ firstName + "\"}";
+    protected String courierNoPass = "{\"login\": \"" + login + "\", \"password\": \"\",\"firstName\":\""+ firstName + "\"}";
+    protected String courierNoName = "{\"login\": \"" + login + "\", \"password\": \"123456\"}";
+    protected String courierWrongLoginToAuth = "{\"login\": \"test" + login +"\", \"password\": \"123456\"}";
+    protected String courierWrongPassToAuth = "{\"login\": \"" + login + "\", \"password\": \"0000123456\"}";
     protected String courierNoLoginToAuth = "{\"login\": \"\", \"password\": \"123456\"}";
-    protected String courierNoPassToAuth = "{\"login\": \"29testCourier\", \"password\": \"\"}";
+    protected String courierNoPassToAuth = "{\"login\": \"" + login + "\", \"password\": \"\"}";
     protected String orderBlackColor = "{" +
-            "\"firstName\":\"Aleksandr\"," +
-            "\"lastName\": \"Kursin\"," +
+            "\"firstName\":\"" + firstNameOrder +"\"," +
+            "\"lastName\": \"" + lastNameOrder + "\"," +
             "\"address\": \"Krasnodar, 142 apt.\"," +
             "\"metroStation\": 4," +
             "\"phone\": \"+7 800 355 35 35\"," +
@@ -30,7 +39,6 @@ public class BaseTest {
             "\"color\": [" +
             "\"BLACK\"" +
             "]}";
-
     @Before
     public void setUp() {
         RestAssured.baseURI = BASE_URI;
