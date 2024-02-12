@@ -5,40 +5,54 @@ import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
 
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.Locale;
+
 import static io.restassured.RestAssured.given;
 import static ru.praktikum.scooter.constants.Config.*;
 
 public class BaseTest {
 
-    private Faker faker = new Faker();
+    private Faker faker = new Faker(new Locale("ru"));
+    private LocalDate date = LocalDate.now();
 
     private String firstName = faker.name().firstName();
     private String login = faker.pokemon().name();
 
     private String firstNameOrder = faker.name().firstName();
     private String lastNameOrder = faker.name().lastName();
+    private String password = faker.idNumber().valid();
+    private String address = faker.address().fullAddress();
+    private String phone = faker.phoneNumber().cellPhone();
+    private String delivDate = String.valueOf(date.plusDays((long)faker.number().randomDigit()));
+    private int rent = faker.number().randomDigitNotZero();
+    private String comment = faker.leagueOfLegends().summonerSpell();
+    private int metro = faker.number().numberBetween(1, 237); // диапазон возможных number станций метро
+
 
     protected int idOrder;
-    protected String newCourier = "{\"login\": \""+ login + "\", \"password\": \"123456\",\"firstName\":\""+ firstName + "\"}";
-    protected String courierNoLogin = "{\"login\": \"\", \"password\": \"123456\",\"firstName\":\""+ firstName + "\"}";
-    protected String courierNoPass = "{\"login\": \"" + login + "\", \"password\": \"\",\"firstName\":\""+ firstName + "\"}";
-    protected String courierNoName = "{\"login\": \"" + login + "\", \"password\": \"123456\"}";
-    protected String courierWrongLoginToAuth = "{\"login\": \"test" + login +"\", \"password\": \"123456\"}";
-    protected String courierWrongPassToAuth = "{\"login\": \"" + login + "\", \"password\": \"0000123456\"}";
-    protected String courierNoLoginToAuth = "{\"login\": \"\", \"password\": \"123456\"}";
+    protected String newCourier = "{\"login\": \"" + login + "\", \"password\": \"" + password + "\",\"firstName\":\"" + firstName + "\"}";
+    protected String courierNoLogin = "{\"login\": \"\", \"password\": \"" + password + "\",\"firstName\":\"" + firstName + "\"}";
+    protected String courierNoPass = "{\"login\": \"" + login + "\", \"password\": \"\",\"firstName\":\"" + firstName + "\"}";
+    protected String courierNoName = "{\"login\": \"" + login + "\", \"password\": \"" + password + "\"}";
+    protected String courierWrongLoginToAuth = "{\"login\": \"test" + login + "\", \"password\": \"" + password + "\"}";
+    protected String courierWrongPassToAuth = "{\"login\": \"" + login + "\", \"password\": \"0000" + password + "\"}";
+    protected String courierNoLoginToAuth = "{\"login\": \"\", \"password\": \"" + password + "\"}";
     protected String courierNoPassToAuth = "{\"login\": \"" + login + "\", \"password\": \"\"}";
     protected String orderBlackColor = "{" +
-            "\"firstName\":\"" + firstNameOrder +"\"," +
+            "\"firstName\":\"" + firstNameOrder + "\"," +
             "\"lastName\": \"" + lastNameOrder + "\"," +
-            "\"address\": \"Krasnodar, 142 apt.\"," +
-            "\"metroStation\": 4," +
-            "\"phone\": \"+7 800 355 35 35\"," +
-            "\"rentTime\": 5," +
-            "\"deliveryDate\": \"2020-06-06\"," +
-            "\"comment\": \"Thank you, Test\"," +
+            "\"address\": \"" + address + "\"," +
+            "\"metroStation\": " + metro + "," +
+            "\"phone\": \"" + phone + "\"," +
+            "\"rentTime\": " + rent + "," +
+            "\"deliveryDate\": \"" + delivDate + "\"," +
+            "\"comment\": \"" + comment + "\"," +
             "\"color\": [" +
             "\"BLACK\"" +
             "]}";
+
     @Before
     public void setUp() {
         RestAssured.baseURI = BASE_URI;
